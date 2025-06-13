@@ -1,5 +1,5 @@
 # main.py
-from stats import count_words, count_characters
+from stats import count_words, count_characters, get_sorted_char_list
 
 
 def get_book_text(path: str) -> str:
@@ -9,20 +9,28 @@ def get_book_text(path: str) -> str:
 
 def main() -> None:
     book_path = "books/frankenstein.txt"
+
+    print("============ BOOKBOT ============")
+    print(f"Analyzing book found at {book_path}...")
+
     text = get_book_text(book_path)
 
-    # word count
+    # word count section
     num_words = count_words(text)
-    print(f"{num_words} words found in the document")
+    print("----------- Word Count ----------")
+    print(f"Found {num_words} total words")
 
-    # character frequencies
+    # character count section
     char_counts = count_characters(text)
-    print(char_counts)           # a full dict dump
+    sorted_chars = get_sorted_char_list(char_counts)
 
-    # --- optional: show the three characters the grader checks ----
-    # print("'t':", char_counts['t'])
-    # print("'p':", char_counts['p'])
-    # print("'c':", char_counts['c'])
+    print("--------- Character Count -------")
+    for entry in sorted_chars:
+        ch = entry["char"]
+        if ch.isalpha():         # skip spaces, punctuation, etc.
+            print(f"{ch}: {entry['num']}")
+
+    print("============= END ===============")
 
 
 if __name__ == "__main__":
