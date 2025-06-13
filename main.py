@@ -5,27 +5,23 @@ def get_book_text(path):
         return f.read()
 
 
-def strip_gutenberg_header_footer(text):
+def strip_gutenberg_header_footer(text: str) -> str:
     """
-    Return only the actual book contents.
-    Lines outside the *** START … and *** END … markers are removed
-    so the word-count matches the exercise’s expected total.
+    Keep content between the official START/END markers *inclusive of the line
+    right after START* (that’s how Boot.dev’s reference count is computed).
     """
-    start_tag = "*** START"
-    end_tag = "*** END"
+    start_token = "*** START OF THE PROJECT GUTENBERG"
+    end_token   = "*** END OF THE PROJECT GUTENBERG"
 
-    start = text.find(start_tag)
-    end = text.find(end_tag)
+    start_idx = text.find(start_token)
+    if start_idx != -1:
+        # jump to the newline *after* the START marker
+        start_idx = text.find("\n", start_idx) + 1
+        text = text[start_idx:]
 
-    if start != -1:
-        # skip the marker line itself
-        text = text[start:]
-        first_newline = text.find("\n")
-        if first_newline != -1:
-            text = text[first_newline + 1 :]
-
-    if end != -1:
-        text = text[:end]
+    end_idx = text.find(end_token)
+    if end_idx != -1:
+        text = text[:end_idx]
 
     return text
 
